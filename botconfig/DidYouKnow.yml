@@ -1,0 +1,9 @@
+addLimitSeconds: 60
+infoLimitSeconds: 10
+badwords:
+    - fuck
+    - fag
+    - gay
+    - nigger
+banlist:
+    - IAmABadDudeAMA

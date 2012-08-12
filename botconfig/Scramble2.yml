@@ -1,0 +1,4 @@
+hintDelay: 15
+delayNext: 5
+maxHints: 4
+abortAfterNoGuesses: 5

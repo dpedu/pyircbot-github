@@ -1,0 +1,9 @@
+nick: pyircbot
+hostname: hostname
+realname: pyircbot
+server: irc.129irc.com
+port: 6667
+autoload:
+    - PingResponder
+    - JoinChannels
+    - Seen
