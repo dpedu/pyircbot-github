@@ -1,3 +1,3 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
-__all__ = ["BeautifulSoup", "BufferedConnection",  "ModuleBase", "SimpleConfigReader", "Tools"];
+__all__ = ["BeautifulSoup", "BufferedConnection",  "ModuleBase", "SimpleConfigReader", "Tools", "PyIRCBot"];

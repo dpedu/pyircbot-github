@@ -1,5 +1,6 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
+import socket
 import time
 import threading
 
@@ -35,12 +36,15 @@ class BufferedConnection(threading.Thread):
 			# and remember to save what happened this time
 			self.lastLineEndedWithNewline = setNL
 	def close(self):
-		self.sock.close;
+		self.alive = False
+		self.sock.shutdown(socket.SHUT_WR)
 	def send(self, text):
-		self.sock.send(text);
+		self.sock.send(text)
 	def hasNext(self):
 		return len(self.buffer) > 0;
 	def nextLine(self):
-		while(len(self.buffer)==0):
+		while len(self.buffer)==0:
+			if not self.alive:
+				return ""
 			time.sleep(.001);
 		return self.buffer.pop(0)+"\n";

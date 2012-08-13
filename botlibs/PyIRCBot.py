@@ -3,19 +3,15 @@ import socket
 import threading
 import sys
 import yaml
-from botlibs import *
-
-# Experimental 
-try:
-	from gevent import monkey;
-	monkey.patch_all()
-except:
-	pass;
+from botlibs import BufferedConnection
 
 # main class of the bot - yes, this means you can theoretically run more then one bot at once. you just need multiple config files.
-class bot(threading.Thread):
+class PyIRCBot(threading.Thread):
 	def __init__(self, configpath):
 		threading.Thread.__init__(self)
+		
+		# Add module includes path
+		sys.path.append("modules/")
 		
 		# path to our configuration file
 		self.configpath = configpath
@@ -44,24 +40,20 @@ class bot(threading.Thread):
 			'004',		# :irc.129irc.com 004 CloneABCD irc.129irc.com Unreal3.2.8.1 iowghraAsORTVSxNCWqBzvdHtGp lvhopsmntikrRcaqOALQbSeIKVfMCuzNTGj
 			'005',		# :irc.129irc.com 005 CloneABCD CMDS=KNOCK,MAP,DCCALLOW,USERIP UHNAMES NAMESX SAFELIST HCN MAXCHANNELS=10 CHANLIMIT=#:10 MAXLIST=b:60,e:60,I:60 NICKLEN=30 CHANNELLEN=32 TOPICLEN=307 KICKLEN=307 AWAYLEN=307 :are supported by this server
 						# :irc.129irc.com 005 CloneABCD MAXTARGETS=20 WALLCHOPS WATCH=128 WATCHOPTS=A SILENCE=15 MODES=12 CHANTYPES=# PREFIX=(qaohv)~&@%+ CHANMODES=beI,kfL,lj,psmntirRcOAQKVCuzNSMTG NETWORK=129irc CASEMAPPING=ascii EXTBAN=~,cqnr ELIST=MNUCT :are supported by this server
+			'250',		# :chaos.esper.net 250 xBotxShellTest :Highest connection count: 1633 (1632 clients) (186588 connections received)
 			'251',		# :irc.129irc.com 251 CloneABCD :There are 1 users and 48 invisible on 2 servers
 			'252',		# :irc.129irc.com 252 CloneABCD 9 :operator(s) online
 			'254',		# :irc.129irc.com 254 CloneABCD 6 :channels formed
 			'255',		# :irc.129irc.com 255 CloneABCD :I have 42 clients and 1 servers
 			'265',		# :irc.129irc.com 265 CloneABCD :Current Local Users: 42  Max: 47
 			'266',		# :irc.129irc.com 266 CloneABCD :Current Global Users: 49  Max: 53
-			'332',		# Channel topic - :availo.esper.net 332 xBotxShell #hcsmp :Channel Title Here
-			'333',		# Channel topic set date - :availo.esper.net 333 xBotxShell #hcsmp sav!savoie@irc.hcsmp.com 1343632267
+			'332',		# :chaos.esper.net 332 xBotxShellTest #xMopx2 :/ #XMOPX2 / https://code.google.com/p/pyircbot/ (Channel Topic)
+			'333',		# :chaos.esper.net 333 xBotxShellTest #xMopx2 xMopxShell!~rduser@108.170.60.242 1344370109
 			'353',		# :irc.129irc.com 353 CloneABCD = #clonea :CloneABCD CloneABC 
 			'366',		# :irc.129irc.com 366 CloneABCD #clonea :End of /NAMES list.
-<<<<<<< .mine
-			'372',		# MOTD - :aperture.esper.net 372 xBotxShell :-                          Enjoy your stay
-			'375',		# MOTD Start - :availo.esper.net 375 xBotxShell :- availo.esper.net Message of the Day -
-			'376',		# MOTD End - :availo.esper.net 376 xBotxShell :End of /MOTD command.
-=======
 			'372',		# :chaos.esper.net 372 xBotxShell :motd text here
+			'375',		# :chaos.esper.net 375 xBotxShellTest :- chaos.esper.net Message of the Day -
 			'376',		# :chaos.esper.net 376 xBotxShell :End of /MOTD command.
->>>>>>> .r26
 			'422'		# :irc.129irc.com 422 CloneABCD :MOTD File is missing
 		]
 		# /me is :user PRIVMSG #clonea :ACTION action
@@ -78,7 +70,7 @@ class bot(threading.Thread):
 		# module settings that persist across reload
 		self.moduleSettings = {}
 		
-	def start(self):
+	def run(self):
 		# load bots configuration
 		self.readConfig()
 		# create dict of hookable functions
@@ -90,7 +82,7 @@ class bot(threading.Thread):
 		# Send USER and NICK and that crap
 		self.initConnection()
 		# Start out listener thread
-		self.listener = botListener(self)
+		self.listener = BotSocketListener(self)
 	
 	def connect(self):
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -161,8 +153,6 @@ class bot(threading.Thread):
 	def importmodule(self, name):
 		if not name in self.modules:
 			try:
-				# add the path to this module so python can find it
-				sys.path.append("botmodules/"+name)
 				# manually import the module saving it in out list of modules
 				moduleref = __import__(name)
 				self.modules[name]=moduleref
@@ -183,10 +173,9 @@ class bot(threading.Thread):
 			item = self.modules[name];
 			del self.modules[name]
 			del item
-			# and remove it's path from $PYTHONPATH
-			sys.path.remove("botmodules/"+name)
 			# finally, delete any cache in sys.modules
-			del sys.modules[name]
+			if name in sys.modules:
+				del sys.modules[name]
 	def reloadmodule(self, name):
 		if name in self.modules:
 			loadedbefore = name in self.moduleInstances;
@@ -265,50 +254,25 @@ class bot(threading.Thread):
 		else:
 			for hook in self.hookcalls[command]:
 				hook(args, prefix, trailing)
+	def shutdown(self):
+		names = []
+		for name in self.modules:
+			names.append(name)
+		for name in names:
+			self.deportmodule(name)
+		self.listener.running = False
+		self.connection.close()
+	def signal_handler(self, signal, frame):
+		print "CTRL-C Recieved, Shutting down"
+		self.shutdown()
 		
-class botListener(threading.Thread):
+class BotSocketListener(threading.Thread):
 	def __init__(self, bot):
 		threading.Thread.__init__(self)
 		self.bot = bot;
+		self.running = True;
 		self.start()
-	
 	def run(self):
-		while 1:
+		while self.running:
 			line=self.bot.connection.nextLine()
 			self.bot.processLine(line);
-
-botThread = bot("botconfig/config.yml")
-botThread.start()
-
-while 1:
-	c = raw_input().strip();
-	try:
-		args = c.split(" ")
-		if args[0]=="load":
-			botThread.loadmodule(args[1])
-		elif args[0]=="unload":
-			botThread.unloadmodule(args[1])
-		elif args[0]=="dump":
-			if args[1]=="imports":
-				print str(botThread.modules)
-			elif args[1]=="insts":
-				print str(botThread.moduleInstances)
-			elif args[1]=="hookcalls":
-				print str(botThread.hookcalls)
-			elif args[1]=="settings":
-				print str(botThread.moduleSettings)
-			elif args[1]=="modules":
-				for item in sys.modules:
-					print "%s: %s" % (item, sys.modules[item])
-		elif args[0]=="deport":
-			botThread.deportmodule(args[1]);
-		elif args[0]=="import":
-			botThread.importmodule(args[1]);
-		elif args[0]=="reload":
-			botThread.reloadmodule(args[1]);
-		elif args[0]=="redo":
-			botThread.redomodule(args[1]);
-		else:
-			print "nope"
-	except:
-		pass
