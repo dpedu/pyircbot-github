@@ -202,6 +202,12 @@ class PyIRCBot(threading.Thread):
 	def do_privmsg(self, towho, message):
 		self.sendText("PRIVMSG %s :%s"%(towho,message))
 		
+	def do_setMode(self, channel, mode, extra=None):
+		if extra != None:
+			self.sendText("MODE %s %s %s" % (channel,mode,extra))
+		else:
+			self.sendText("MODE %s %s" % (channel,mode))
+	
 	def do_pingrespond(self, where):
 		self.sendText("PONG :%s" % where)
 	
