@@ -3,6 +3,7 @@ import socket
 import threading
 import sys
 import yaml
+import traceback
 from botlibs import BufferedConnection
 
 # main class of the bot - yes, this means you can theoretically run more then one bot at once. you just need multiple config files.
@@ -259,7 +260,10 @@ class PyIRCBot(threading.Thread):
 			print "Original text: '%s'" % (originalline.strip())
 		else:
 			for hook in self.hookcalls[command]:
-				hook(args, prefix, trailing)
+				try:
+					hook(args, prefix, trailing)
+				except:
+					print "Error processing hook: \n%s"% traceback.format_exc()
 	def shutdown(self):
 		names = []
 		for name in self.modules:

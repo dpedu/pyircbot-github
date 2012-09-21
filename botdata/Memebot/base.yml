@@ -1,0 +1,14 @@
+.icp:
+- bound1: [20, 200]
+  bound2: [615, 315]
+  fontsize: 50
+  image: icp.jpg
+.icp2:
+- bound1: [20, 200]
+  bound2: [615, 315]
+  fontsize: 50
+  image: icp.jpg
+- bound1: [20, 200]
+  bound2: [615, 315]
+  fontsize: 50
+  image: icp.jpg

@@ -1,9 +1,13 @@
 #! /usr/bin/env python
 
+# This file is an example on an irc bot
+# can be created and started
+
 # Only required import
 from botlibs import PyIRCBot
 
-# For testing
+# Required for micro-shell used below
+import sys
 import traceback
 import signal
 
@@ -73,7 +77,7 @@ while alive:
 				print >> sys.stderr, line
 			print >> sys.stderr, "\n*** STACKTRACE - END ***\n"
 		else:
-			print "nope"
+			print "Invalid Command"
 	except Exception,e:
 		print e
 		pass
