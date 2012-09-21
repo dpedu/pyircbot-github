@@ -15,6 +15,10 @@ class ModuleBase:
 	def loadConfig(self):
 		if os.path.exists( "botconfig/%s.yml" % (self.moduleName) ):
 			self.config = yaml.load(file("botconfig/%s.yml" % (self.moduleName), 'r'))
+	def loadCustomConfigFile(self, path):
+		if os.path.exists( path ):
+			return yaml.load(file(path, 'r'))
+		return {}
 	def loadCustomConfig(self, name):
 		if os.path.exists( "botconfig/%s" % (self.moduleName) ):
 			return yaml.load(file("botconfig/%s" % (self.moduleName), 'r'))
