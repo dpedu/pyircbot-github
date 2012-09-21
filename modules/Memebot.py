@@ -61,11 +61,11 @@ class Memebot(ModuleBase.ModuleBase):
 		if cmd:
 			sender = self.bot.extract_nick_from_prefix(prefix)
 			
-			self.bot.do_privmsg(sender, "I Am Memebot and I create #the129 meme images.")
+			self.bot.do_privmsg(sender, "I Am Memebot and I create meme images.")
 			self.bot.do_privmsg(sender, "Commands: .help .faqs .memes .meme")
-			self.bot.do_privmsg(sender, "Examples: .meme RIT Sucks    <- Create a meme with a random image")
+			self.bot.do_privmsg(sender, "Examples: .meme Bush Sucks   <- Create a meme with a random image")
 			self.bot.do_privmsg(sender, "Examples: .memes             <- Get a list of available memes")
-			self.bot.do_privmsg(sender, "Examples: .chug I eat dicks  <- Create a meme of chug with your given text")
+			self.bot.do_privmsg(sender, "Examples: .icp I eat dicks   <- Create a meme of the icp with your given text")
 			return
 		
 		cmd = Tools.messageHasCommand(".faqs", trailing)
@@ -88,9 +88,9 @@ class Memebot(ModuleBase.ModuleBase):
 				return
 				# invalid faq number
 			if faqnum==1:
-				self.bot.do_privmsg(sender, "Answer 1: This bot can be fixed by CloneShell.")
+				self.bot.do_privmsg(sender, "Answer 1: This bot can be fixed by YourNameHere.")
 			elif faqnum==2:
-				self.bot.do_privmsg(sender, "Answer 2: New images should have the URL PM'd to CloneShell.")
+				self.bot.do_privmsg(sender, "Answer 2: New images should have the URL PM'd to YourNameHere.")
 				self.bot.do_privmsg(sender, "Answer 2: If the demand is enough, a .suggest command may be added in the future.")
 			elif faqnum==3:
 				self.bot.do_privmsg(sender, "Answer 3: No images will be taken down with the exception of extreme cases and ")
@@ -110,7 +110,7 @@ class Memebot(ModuleBase.ModuleBase):
 				sender = self.bot.extract_nick_from_prefix(prefix)
 				text = cmd[2].upper().strip()
 				
-				self.bot.do_privmsg(args[0], "%s: Meme created: http://memes.dpedu.me/memes/%s" % (sender, self.getMeme(memecmd, text, prefix)))
+				self.bot.do_privmsg(args[0], "%s: Meme created: http://yourmemehost/memes/%s" % (sender, self.getMeme(memecmd, text, prefix)))
 				return
 		
 		cmd = Tools.messageHasCommand(".memes", trailing)
@@ -131,7 +131,7 @@ class Memebot(ModuleBase.ModuleBase):
 			sender = self.bot.extract_nick_from_prefix(prefix)
 			text = cmd[2].upper().strip()
 			
-			self.bot.do_privmsg(args[0], "%s: Meme created: http://memes.dpedu.me/memes/%s" % (sender, self.getMeme(chosen, text, prefix)))
+			self.bot.do_privmsg(args[0], "%s: Meme created: http://yourmemehost/memes/%s" % (sender, self.getMeme(chosen, text, prefix)))
 			return
 	
 	def getMeme(self, memecmd, text, prefix):
