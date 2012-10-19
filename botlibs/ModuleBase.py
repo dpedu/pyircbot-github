@@ -10,6 +10,7 @@ class ModuleBase:
 		self.moduleName="ModuleBase"
 		self.bot = main
 		self.hooks=[]
+		self.services=[]
 		self.properties={}
 		self.config={}
 	def loadConfig(self):
