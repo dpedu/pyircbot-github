@@ -1,5 +1,7 @@
 addLimitSeconds: 0
 infoLimitSeconds: 600
+# storage can by yaml or mysql, provided you have MySQL module and configured.
+storage: yaml
 badwords:
     - fuck
     - shit

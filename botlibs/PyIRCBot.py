@@ -192,6 +192,18 @@ class PyIRCBot(threading.Thread):
 		if loadedbefore:
 			self.loadmodule(name)
 	
+	def getmodulebyname(self, name):
+		if not name in self.moduleInstances:
+			return None
+		return self.moduleInstances[name]
+	
+	def getmodulesbyservice(self, service):
+		validModules = []
+		for module in self.moduleInstances:
+			if service in self.moduleInstances[module].services:
+				validModules.append(self.moduleInstances[module])
+		return validModules
+	
 	def set_nick(self, newNick):
 		self.sendText("NICK %s" % newNick);
 	def get_nick(self):
@@ -231,6 +243,8 @@ class PyIRCBot(threading.Thread):
 		pos.append(prefix.find("!"))
 		pos.sort()
 		return prefix[0:pos[0]]
+	def extract_ip_from_prefix(self, prefix):
+		return prefix.split("@")[1]
 	def processLine(self, line):
 		if line.strip() == "":
 			return;
