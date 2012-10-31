@@ -1,5 +1,5 @@
-delayMin: 5
-delayMax: 15
+delayMin: 60
+delayMax: 300
 missChance: 10
 animal: "\\_o< Quack!"
 animalSpecies: "Duck"
@@ -12,4 +12,4 @@ weightMin: 2.5
 weightMax: 3.5
 weightRunt: 1.5
 weightFat: 5.0
-activeChannel: "#xMopx"
+activeChannel: "#pyircbot"
