@@ -42,7 +42,7 @@ class DidYouKnowApprove(ModuleBase.ModuleBase):
 				   `user` varchar(64),
 				   `ip` varchar(256),
 				   `text` varchar(512),
-				   `status` int(1),
+				   `status` int(2),
 				   PRIMARY KEY (`id`)
 				);""")
 				c.close()
@@ -119,7 +119,7 @@ class DidYouKnowApprove(ModuleBase.ModuleBase):
 					return True
 		elif self.config["storage"]=="mysql":
 			c = self.sql.getCursor()
-			q = c.execute("SELECT * FROM `didyouknow_facts` WHERE `text`= %s ;", ( content.strip() ))
+			q = c.execute("SELECT * FROM `didyouknow_facts` WHERE `text`= %s AND (`status`=1 OR `status`=0);", ( content.strip() ))
 			count = c.rowcount
 			c.close()
 			return count>0

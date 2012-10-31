@@ -131,7 +131,7 @@ class PyIRCBot(threading.Thread):
 	def loadmodule(self, name):
 		if name in self.moduleInstances:
 			print "Module %s already loaded" % name
-			return false
+			return False
 		if not name in self.modules:
 			self.importmodule(name)
 		self.moduleInstances[name] = getattr(self.modules[name], name)(self)
