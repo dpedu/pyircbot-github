@@ -83,12 +83,13 @@ class PyIRCBot(threading.Thread):
 		# Send USER and NICK and that crap
 		self.initConnection()
 		# Start out listener thread
-		self.listener = BotSocketListener(self)
+		self.connection.start()
+		#self.listener = BotSocketListener(self)
 	
 	def connect(self):
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		s.connect(( self.config["server"], int(self.config["port"]) ))
-		self.connection = BufferedConnection.BufferedConnection(s)
+		self.connection = BufferedConnection.BufferedConnection(s, self.processLine)
 	
 	def readConfig(self):
 		self.config = yaml.load(file(self.configpath, 'r'))
@@ -284,19 +285,7 @@ class PyIRCBot(threading.Thread):
 			names.append(name)
 		for name in names:
 			self.deportmodule(name)
-		self.listener.running = False
 		self.connection.close()
 	def signal_handler(self, signal, frame):
 		print "CTRL-C Recieved, Shutting down"
 		self.shutdown()
-		
-class BotSocketListener(threading.Thread):
-	def __init__(self, bot):
-		threading.Thread.__init__(self)
-		self.bot = bot;
-		self.running = True;
-		self.start()
-	def run(self):
-		while self.running:
-			line=self.bot.connection.nextLine()
-			self.bot.processLine(line);
