@@ -14,7 +14,11 @@ import signal
 # One or more bots can be started this way
 botThread = PyIRCBot.PyIRCBot("botconfig/config.yml")
 botThread.start()
-signal.signal(signal.SIGINT, botThread.signal_handler)
+
+def sig(signal, frame):
+	print "\nType 'exit' to exit."
+	return 1
+signal.signal(signal.SIGINT, sig)
 
 # Simple debug "shell"
 # Commands:
@@ -30,9 +34,10 @@ signal.signal(signal.SIGINT, botThread.signal_handler)
 #	dump settings
 #	dump modules
 #	trace
-#	exit
+#	exit or ctrl-c
 
 alive = True
+
 while alive:
 	c = raw_input().strip();
 	try:
@@ -62,7 +67,7 @@ while alive:
 		elif args[0]=="redo":
 			botThread.redomodule(args[1]);
 		elif args[0]=="exit":
-			botThread.signal_handler(9, 9)
+			botThread.shutdown()
 			alive = False
 		elif args[0]=="trace":
 			print >> sys.stderr, "\n*** STACKTRACE - START ***\n"

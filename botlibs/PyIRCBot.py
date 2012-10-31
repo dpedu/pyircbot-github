@@ -286,6 +286,3 @@ class PyIRCBot(threading.Thread):
 		for name in names:
 			self.deportmodule(name)
 		self.connection.close()
-	def signal_handler(self, signal, frame):
-		print "CTRL-C Recieved, Shutting down"
-		self.shutdown()
