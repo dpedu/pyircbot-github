@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 from botlibs import ModuleBase
 from botlibs import Tools
 from urllib import urlencode

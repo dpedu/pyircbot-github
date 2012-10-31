@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 from botlibs import ModuleBase,SimpleConfigReader
 from urllib import urlencode
 import mechanize

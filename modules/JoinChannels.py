@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 from botlibs import ModuleBase
 
 class JoinChannels(ModuleBase.ModuleBase):
