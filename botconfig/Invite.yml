@@ -1,0 +1,4 @@
+whitelist:
+     - '#hcsmp'
+     - '#xmopx'
+whitelist-enabled: true
