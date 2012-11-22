@@ -105,7 +105,10 @@ class DidYouKnowApprove(ModuleBase.ModuleBase):
 			factoid = self.loadRandomFactoid()
 			if not factoid:
 				return
-			self.bot.do_privmsg(args[0], "<Did you know?> %s" % factoid["text"])
+			msg = "<Did you know?> %s" % factoid["text"]
+			if not factoid["user"]=="(Imported)":
+				msg+=" <Added by %s>" % factoid["user"]
+			self.bot.do_privmsg(args[0], msg)
 			
 			self.lastDyk = int(time.time())
 				
