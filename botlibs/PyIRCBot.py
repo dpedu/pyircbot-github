@@ -11,6 +11,9 @@ class PyIRCBot(threading.Thread):
 	def __init__(self, configpath):
 		threading.Thread.__init__(self)
 		
+		# Version.
+		self.version = "0.00"
+		
 		# Add module includes path
 		sys.path.append("modules/")
 		
