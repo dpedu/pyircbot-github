@@ -38,6 +38,7 @@ class PyIRCBot(threading.Thread):
 			'PART',		# :CloneA!dave@hidden-B4F6B1AA.rit.edu PART #clonea
 			'PRIVMSG',	# :CloneA!dave@hidden-B4F6B1AA.rit.edu PRIVMSG #clonea :aaa
 			'KICK',		# :xMopxShell!~rduser@host KICK #xMopx2 xBotxShellTest :xBotxShellTest
+			'INVITE',	# :gmx!~gmxgeek@irc.hcsmp.com INVITE Tyrone :#hcsmp'
 			'001',		# :irc.129irc.com 001 CloneABCD :Welcome to the 129irc IRC Network CloneABCD!CloneABCD@djptwc-laptop1.rit.edu
 			'002',		# :irc.129irc.com 002 CloneABCD :Your host is irc.129irc.com, running version Unreal3.2.8.1
 			'003',		# :irc.129irc.com 003 CloneABCD :This server was created Mon Jul 19 2010 at 03:12:01 EDT
