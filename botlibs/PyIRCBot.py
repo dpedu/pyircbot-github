@@ -35,6 +35,8 @@ class PyIRCBot(threading.Thread):
 			'MODE',		# :CloneABCD MODE CloneABCD :+iwx
 			'PING',		# PING :irc.129irc.com
 			'JOIN',		# :CloneA!dave@hidden-B4F6B1AA.rit.edu JOIN :#clonea
+			'QUIT',		# :HCSMPBot!~HCSMPBot@108.170.48.18 QUIT :Quit: Disconnecting!
+			'NICK',		# :foxiAway!foxi@irc.hcsmp.com NICK :foxi
 			'PART',		# :CloneA!dave@hidden-B4F6B1AA.rit.edu PART #clonea
 			'PRIVMSG',	# :CloneA!dave@hidden-B4F6B1AA.rit.edu PRIVMSG #clonea :aaa
 			'KICK',		# :xMopxShell!~rduser@host KICK #xMopx2 xBotxShellTest :xBotxShellTest
@@ -211,6 +213,7 @@ class PyIRCBot(threading.Thread):
 	
 	def set_nick(self, newNick):
 		self.sendText("NICK %s" % newNick);
+	
 	def get_nick(self):
 		return self.config["nick"];
 	
@@ -282,11 +285,34 @@ class PyIRCBot(threading.Thread):
 				try:
 					hook(args, prefix, trailing)
 				except:
-					print "Error processing hook: \n%s"% traceback.format_exc()
+					print "Error processing hook: \n%s"% self.trace()
 	def shutdown(self):
 		names = []
 		for name in self.modules:
-			names.append(name)
+			try:
+				names.append(name)
+			except:
+				pass
 		for name in names:
-			self.deportmodule(name)
+			try:
+				self.deportmodule(name)
+			except:
+				pass
 		self.connection.close()
+	def trace(self):
+		return traceback.format_exc()
+	def fullTrace(self):
+		result = ""
+		result += "\n*** STACKTRACE - START ***\n"
+		code = []
+		for threadId, stack in sys._current_frames().items():
+			code.append("\n# ThreadID: %s" % threadId)
+			for filename, lineno, name, line in traceback.extract_stack(stack):
+				code.append('File: "%s", line %d, in %s' % (filename, lineno, name))
+				if line:
+					code.append("  %s" % (line.strip()))
+		for line in code:
+			
+			result += line + "\n"
+		result += "\n*** STACKTRACE - END ***\n"
+		return result
