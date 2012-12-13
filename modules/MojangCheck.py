@@ -33,7 +33,10 @@ class MojangCheck(ModuleBase.ModuleBase):
 		cmd = Tools.messageHasCommand("!mcstatus", trailing, False)
 		if cmd and cmd[2]=='':
 			
-			status = "Minecraft Status: "
+			status = "Minecraft Status " 
+			if self.last_checked_at:
+				status += "(%i seconds ago)" % (time.time() - self.last_checked_at) 
+			status += ": "
 			
 			color = self.choosePrefixFor(self.results["login"])
 			status+=color+"Login"+color[0:-1]+" "
@@ -74,6 +77,7 @@ class MojangCheck(ModuleBase.ModuleBase):
 			"account":self.c.checkAccount(),
 			"mcbouncer":self.c.checkMcbouncer()
 		}
+		self.last_checked_at = time.time()
 		
 		self.timer = Timer(25, self.pingCheck)
 		self.timer.start()
