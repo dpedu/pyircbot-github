@@ -19,9 +19,52 @@ class Calc(ModuleBase.ModuleBase):
 			self.bot.deportmodule(self.moduleName)
 			return
 		self.sql = self.sql[0].getConnection()
+		if not self.sql.tableExists("calc_addedby"):
+			c = self.sql.getCursor()
+			c.execute("""
+				CREATE TABLE IF NOT EXISTS `calc_addedby` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `username` varchar(32) NOT NULL,
+				  `userhost` varchar(128) NOT NULL,
+				  PRIMARY KEY (`id`)
+				) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
+			""")
+			c.close()
+		if not self.sql.tableExists("calc_channels"):
+			c = self.sql.getCursor()
+			c.execute("""
+				CREATE TABLE IF NOT EXISTS `calc_channels` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `channel` varchar(32) NOT NULL,
+				  PRIMARY KEY (`id`)
+				) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
+			""")
+		if not self.sql.tableExists("calc_definitions"):
+			c = self.sql.getCursor()
+			c.execute("""
+				CREATE TABLE IF NOT EXISTS `calc_definitions` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `word` int(11) NOT NULL,
+				  `definition` varchar(512) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+				  `addedby` int(11) NOT NULL,
+				  `date` datetime NOT NULL,
+				  `status` enum('pending','approved','deleted') CHARACTER SET ascii NOT NULL DEFAULT 'pending',
+				  PRIMARY KEY (`id`)
+				) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
+			""")
 		if not self.sql.tableExists("calc_words"):
-			# TODO auto-create DB
-			pass
+			c = self.sql.getCursor()
+			c.execute("""
+				CREATE TABLE IF NOT EXISTS `calc_words` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `channel` int(11) NOT NULL,
+				  `word` varchar(512) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+				  `status` enum('pending','approved','deleted') CHARACTER SET ascii NOT NULL DEFAULT 'pending',
+				  PRIMARY KEY (`id`),
+				  KEY `channel` (`channel`,`word`(255))
+				) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
+			""")
+			c.close()
 		print "Calc loaded"
 	
 	def timeSince(self, channel, timetype):
