@@ -26,13 +26,16 @@ class Calc(ModuleBase.ModuleBase):
 	
 	def timeSince(self, channel, timetype):
 		if not channel in self.timers:
-			self.timers[channel]={"add":0, "calc":0, "calcspec":0, "match":0}
+			self.createDefaultTimers(channel)
 		return time.time()-self.timers[channel][timetype]
 	
 	def updateTimeSince(self, channel, timetype):
 		if not channel in self.timers:
-			self.timers[channel]={"add":0, "calc":0, "calcspec":0, "match":0}
+			self.createDefaultTimers(channel)
 		self.timers[channel][timetype] = time.time()
+	
+	def createDefaultTimers(self, channel):
+		self.timers[channel]={"add":0, "calc":0, "calcspec":0, "match":0}
 	
 	def remainingToStr(self, total, elasped):
 		remaining = total-elasped
