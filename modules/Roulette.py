@@ -1,6 +1,5 @@
 #!/usr/bin/env python
-from botlibs import ModuleBase
-from botlibs import Tools
+from botlibs import ModuleBase,Tools
 import random
 
 class Roulette(ModuleBase.ModuleBase):
@@ -28,6 +27,8 @@ class Roulette(ModuleBase.ModuleBase):
 				self.chambers = None
 			else: 
 				self.bot.do_privmsg(args[0], "Click!")
+				if len(self.chambers)==1:
+					self.reload(args[0])
 	def reload(self, channel):
 		self.chambers = [False, False, False, False, False, False]
 		self.chambers[random.randint(0, 5)]=True
