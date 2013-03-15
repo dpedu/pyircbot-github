@@ -44,6 +44,14 @@ class Connection:
 	
 	# Returns a cusor object, after checking for connectivity
 	def getCursor(self):
+		self.ensureConnected()
+		return self.connection.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+	
+	def escape(self, s):
+		self.ensureConnected()
+		return self.connection.escape_string(s)
+	
+	def ensureConnected(self):
 		try:
 			self.connection.ping()
 		except:
@@ -54,7 +62,9 @@ class Connection:
 			del self.connection
 			print "MySQL: Connecting to db host at %s" % self.config["host"]
 			self._connect()
-		return self.connection.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+	
+	def ondisable(self):
+		self.connection.close()
 	
 	# Connects to the database server, and selects a database (Or attempts to create it if it doesn't exist yet)
 	def _connect(self):

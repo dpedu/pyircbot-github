@@ -1,0 +1,5 @@
+allowDelete: true
+delaySubmit: 5
+delayCalc: 30
+delayCalcSpecific: 30
+delayMatch: 15
