@@ -90,8 +90,8 @@ class Calc(ModuleBase.ModuleBase):
 		# Channel only
 		if not args[0][0]=="#":
 			return
-		
-		if trailing[0:4]=="calc":
+		#[0:5] for anything after "calc"
+		if trailing[0:5]=="calc":
 			calcCmd = trailing[4:]
 			if "=" in calcCmd[1:]:
 				" Add a new calc "
